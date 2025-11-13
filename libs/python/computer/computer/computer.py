@@ -73,6 +73,7 @@ class Computer:
         ephemeral: bool = False,
         api_key: Optional[str] = None,
         experiments: Optional[List[str]] = None,
+        no_display: bool = False,
     ):
         """Initialize a new Computer instance.
 
@@ -100,6 +101,7 @@ class Computer:
             ephemeral: Whether to use ephemeral storage
             api_key: Optional API key for cloud providers
             experiments: Optional list of experimental features to enable (e.g. ["app-use"])
+            no_display: Whether to suppress the host-side VM display window (default: False)
         """
 
         self.logger = Logger("computer", verbosity)
@@ -123,6 +125,7 @@ class Computer:
 
         self.api_key = api_key
         self.experiments = experiments or []
+        self.no_display = no_display
 
         if "app-use" in self.experiments:
             assert self.os_type == "macos", "App use experiment is only supported on macOS"
@@ -415,7 +418,7 @@ class Computer:
                             self.logger.warning(f"Shared directory does not exist: {path}")
 
                     # Prepare run options to pass to the provider
-                    run_opts = {}
+                    run_opts = {"no_display": self.no_display}
 
                     # Add display information if available
                     if self.config.display is not None:
@@ -1075,13 +1078,13 @@ import traceback
 try:
     # Define the function from source
 {textwrap.indent(func_source, "    ")}
-    
+
     # Deserialize args and kwargs from JSON
     args_json = """{args_json}"""
     kwargs_json = """{kwargs_json}"""
     args = json.loads(args_json)
     kwargs = json.loads(kwargs_json)
-    
+
     # Execute the function
     result = {func_name}(*args, **kwargs)
 
@@ -1091,7 +1094,7 @@ try:
         "result": result,
         "error": None
     }}
-    
+
 except Exception as e:
     # Create error output payload
     output_payload = {{

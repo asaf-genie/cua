@@ -178,6 +178,12 @@ def lume_api_run(
     if "shared_directories" in run_opts and run_opts["shared_directories"]:
         payload["sharedDirectories"] = run_opts["shared_directories"]
 
+    # Pass through display suppression flag when provided
+    if "no_display" in run_opts:
+        payload["noDisplay"] = run_opts["no_display"]
+    elif "noDisplay" in run_opts:
+        payload["noDisplay"] = run_opts["noDisplay"]
+
     # Log the payload for debugging
     logger.debug(f"API payload: {json.dumps(payload, indent=2)}")
 
